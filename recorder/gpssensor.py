@@ -25,10 +25,10 @@ class GpsPoller(threading.Thread):
 
     def pkt_to_dict(self, packet):
         packet_dict = {
-            'gpo_mode': packet.mode,
+            'gps_mode': packet.mode,
             'gps_lon': packet.lon,
             'gps_lat': packet.lat,
-            'gps_alt': packet.atl,
+            'gps_alt': packet.alt,
             'gps_track': packet.track,
             'gps_hspeed': packet.hspeed,
             'gps_time': packet.time
