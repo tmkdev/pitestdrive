@@ -24,15 +24,19 @@ class GpsPoller(threading.Thread):
         gpsd.connect()
 
     def pkt_to_dict(self, packet):
-        packet_dict = {
-            'gps_mode': packet.mode,
-            'gps_lon': packet.lon,
-            'gps_lat': packet.lat,
-            'gps_alt': packet.alt,
-            'gps_track': packet.track,
-            'gps_hspeed': packet.hspeed,
-            'gps_time': packet.time
-        }
+        try:
+            packet_dict = {
+                'gps_mode': packet.mode,
+                'gps_lon': packet.lon,
+                'gps_lat': packet.lat,
+                'gps_alt': packet.alt,
+                'gps_track': packet.track,
+                'gps_hspeed': packet.hspeed,
+                'gps_time': packet.time
+            }
+        except:
+            packet_dict = {}
+
         return packet_dict
 
     def run(self):
