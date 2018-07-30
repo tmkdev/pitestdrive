@@ -7,10 +7,9 @@ from Adafruit_BNO055 import BNO055
 
 
 class MotionSensor(threading.Thread):
-    def __init__(self, serial_port='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH02JLPE-if00-port'):
+    def __init__(self, serial_port='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH02JLPE-if00-port0'):
         threading.Thread.__init__(self)
         self.serial_port = serial_port
-        self.rst = rst
         self.current_reading = None
         self.running = True
         self.sensor_present = False
@@ -18,7 +17,7 @@ class MotionSensor(threading.Thread):
 
     def setup(self):
         try:
-            self.bno = BNO055.BNO055(serial_port=self.serial_port, rst=self.rst)
+            self.bno = BNO055.BNO055(serial_port=self.serial_port)
             self.bno.begin()
             status, self_test, error = self.bno.get_system_status()
             logging.info('System status: {0}'.format(status))
@@ -59,7 +58,7 @@ class MotionSensor(threading.Thread):
                 'zg': zg,
             }
 
-            time.sleep(0.1)
+            time.sleep(0.05)
 
 
 if __name__ == '__main__':

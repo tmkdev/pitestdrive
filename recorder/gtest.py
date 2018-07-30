@@ -10,6 +10,8 @@ if __name__ == '__main__':
   try:
     while True:
       if gpsp.current_packet:
+        print(dict(gpsp.current_packet))
+
         try:
           print(gpsp.current_packet.mode)
           print(gpsp.current_packet.hspeed)

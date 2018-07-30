@@ -44,11 +44,11 @@ def record():
             camera.vflip=True
             camera.rotation=90
             camera.framerate = 30
-            camera.start_recording('{0}/sensorlog.h264')
+            camera.start_recording('{0}/sensorlog.h264'.format(recordpath))
             for x in range(200):
                 rowdict = {'frame': camera.frame.index,
                            'slot': x,
-                           'datetime': datetime.datetime.now()}
+                           'datetime': str(datetime.datetime.now())}
                 try:
                     rowdict['gps_lat'] = gps.current_packet.lat
                     rowdict['gps_lon'] = gps.current_packet.lon
@@ -58,16 +58,7 @@ def record():
                 except:
                     pass
                 if motion.sensor_present:
-                    rowdict['motion_heading'] = motion.current_reading['heading']
-                    rowdict['motion_pitch'] = motion.current_reading['pitch']
-                    rowdict['motion_roll'] = motion.current_reading['roll']
-                    rowdict['motion_temp_c'] = motion.current_reading['temp_c']
-                    rowdict['motion_xl'] = motion.current_reading['pitch']
-                    rowdict['motion_yl'] = motion.current_reading['pitch']
-                    rowdict['motion_zl'] = motion.current_reading['pitch']
-                    rowdict['motion_xg'] = motion.current_reading['pitch']
-                    rowdict['motion_yg'] = motion.current_reading['pitch']
-                    rowdict['motion_zg'] = motion.current_reading['pitch']
+                    rowdict = {**rowdict, **motion.current_reading}
 
                 jsonfile.write(json.dumps(rowdict) + '\n')
                 time.sleep(0.1)
