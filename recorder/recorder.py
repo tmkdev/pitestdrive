@@ -10,6 +10,7 @@ from gpssensor import GpsPoller
 motion = None
 gps = None
 
+
 def setup():
     global motion
     global gps
@@ -25,14 +26,16 @@ def setup():
     gps.setup()
     gps.start()
 
+
 def teardown():
-    motion.running=False
+    motion.running = False
     if motion.sensor_present:
         motion.join()
 
-    gps.running=False
+    gps.running = False
     if gps.sensor_present:
         gps.join()
+
 
 def record():
     recordpath = '/home/pi/tracklogs'
@@ -41,8 +44,8 @@ def record():
         logging.warning('Recording')
         with picamera.PiCamera() as camera:
             camera.resolution = (1920, 1080)
-            camera.vflip=True
-            camera.rotation=90
+            camera.vflip = True
+            camera.rotation = 90
             camera.framerate = 30
             camera.start_recording('{0}/sensorlog.h264'.format(recordpath))
             for x in range(200):
@@ -50,11 +53,7 @@ def record():
                            'slot': x,
                            'datetime': str(datetime.datetime.now())}
                 try:
-                    rowdict['gps_lat'] = gps.current_packet.lat
-                    rowdict['gps_lon'] = gps.current_packet.lon
-                    rowdict['gps_speed'] = gps.current_packet.hspeed
-                    rowdict['gps_alt'] = gps.current_packet.alt
-                    rowdict['gps_track'] = gps.current_packet.track
+                    rowdict = {**rowdict, **gps.current_packet}
                 except:
                     pass
                 if motion.sensor_present:
@@ -63,7 +62,11 @@ def record():
                 jsonfile.write(json.dumps(rowdict) + '\n')
                 time.sleep(0.1)
 
+
 if __name__ == '__main__':
     setup()
-    record()
+    try:
+        record()
+    except KeyboardInterrupt:
+        logging.warning("Got Cntrol-C")
     teardown()

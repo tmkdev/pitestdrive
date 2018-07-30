@@ -32,7 +32,7 @@ class MotionSensor(threading.Thread):
 
             return self.sensor_present
         except:
-            self.sensor_present=False
+            self.sensor_present = False
             logging.exception('Failed to initialize BNO055! Is the sensor connected?')
 
     def run(self):
@@ -62,7 +62,7 @@ class MotionSensor(threading.Thread):
 
 
 if __name__ == '__main__':
-    motion = MotionSensor() # create the thread
+    motion = MotionSensor()  # create the thread
     valid = motion.setup()
 
     if valid:
@@ -79,5 +79,5 @@ if __name__ == '__main__':
         logging.exception('Crap.')
         print('exit.')
 
-    motion.running=False
+    motion.running = False
     motion.join()
