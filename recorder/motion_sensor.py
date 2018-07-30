@@ -7,7 +7,7 @@ from Adafruit_BNO055 import BNO055
 
 
 class MotionSensor(threading.Thread):
-    def __init__(self, serial_port='/dev/serial0', rst=18):
+    def __init__(self, serial_port='/dev/serial0'):
         threading.Thread.__init__(self)
         self.serial_port = serial_port
         self.rst = rst
