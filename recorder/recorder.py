@@ -45,7 +45,6 @@ def record():
         x=0
         with picamera.PiCamera() as camera:
             camera.resolution = (1920, 1080)
-            camera.vflip = True
             camera.rotation = 270
             camera.framerate = 30
             camera.start_recording('{0}/sensorlog.h264'.format(recordpath))
