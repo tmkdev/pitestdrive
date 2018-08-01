@@ -41,8 +41,13 @@ class GpsPoller(threading.Thread):
 
     def run(self):
         while self.running:
-            with lock:
-                self.current_packet = self.pkt_to_dict(gpsd.get_current())
+            try:
+                current_packet = gpsd.get_current()
+                with lock:
+                    self.current_packet = self.pkt_to_dict(current_packet)
+            except UserWarning:
+                logging.warning('Waiting on GPS')
+
             time.sleep(0.1)
 
 
@@ -55,11 +60,7 @@ if __name__ == '__main__':
         while True:
             if gpsp.current_packet:
                 try:
-                    print(gpsp.current_packet.mode)
-                    print(gpsp.current_packet.hspeed)
-                    print(gpsp.current_packet.track)
-                    print(gpsp.current_packet.position())
-                    print(gpsp.current_packet.get_time(local_time=True))
+                    print(gpsp.current_packet)
                 except:
                     logging.exception('Crrap')
 
