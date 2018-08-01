@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 try:
                     print(gpsp.current_packet)
                 except:
-                    logging.exception('Crrap')
+                    logging.exception('Crap')
 
             time.sleep(1)
     except:
