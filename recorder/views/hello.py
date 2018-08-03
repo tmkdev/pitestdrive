@@ -12,6 +12,17 @@ def shutdown_server():
 def index():
     return render_template('hello.html', datadict = current_app.config['SHARED_DICT'])
 
+@hello.route('/record')
+def record():
+    current_app.config['RECORD_EVENT'].set()
+    return "Recording!!!"
+
+@hello.route('/stop')
+def record():
+    current_app.config['RECORD_EVENT'].clear()
+    return "Stopped Recording!!!"
+
+
 @hello.route('/shutdown')
 def shutdown():
     shutdown_server()
