@@ -7,7 +7,7 @@ from Adafruit_BNO055 import BNO055
 
 
 class MotionSensor(multiprocessing.Process):
-    def __init__(self, serial_port='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH02JLPE-if00-port0', shared_data_dict, running_event):
+    def __init__(self, shared_data_dict, running_event, serial_port='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH02JLPE-if00-port0'):
         multiprocessing.Process.__init__(self)
         self.serial_port = serial_port
         self.current_reading = shared_data_dict
@@ -42,7 +42,7 @@ class MotionSensor(multiprocessing.Process):
             temp_c = self.bno.read_temp()
             xl, yl, zl = self.bno.read_linear_acceleration()
             xg, yg, zg = self.bno.read_gravity()
-            self.shared_data_dict = { **self.shared_data_dict, **{
+            self.current_reading.update({
                 'heading': heading,
                 'roll': roll,
                 'pitch': pitch,
@@ -56,8 +56,7 @@ class MotionSensor(multiprocessing.Process):
                 'xg': xg,
                 'yg': yg,
                 'zg': zg,
-                }
-            }
+                })
 
             time.sleep(0.05)
 
@@ -65,14 +64,13 @@ class MotionSensor(multiprocessing.Process):
 if __name__ == '__main__':
     manager = multiprocessing.Manager()
     shared_dict = manager.dict()
+
     running_event = multiprocessing.Event()
     running_event.set()
 
 
-    motion = MotionSensor(shared_data_dict=shared_dict)  # create the thread
+    motion = MotionSensor(shared_data_dict=shared_dict, running_event=running_event)  # create the thread
     valid = motion.setup()
-
-
 
     if valid:
         motion.start()
@@ -81,7 +79,7 @@ if __name__ == '__main__':
 
     try:
         while True:
-            print(motion.current_reading)
+            print(shared_dict)
             time.sleep(1)
 
     except:

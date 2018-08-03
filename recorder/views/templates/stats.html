@@ -1,4 +1,5 @@
 <!doctype html>
 <title>Stats</title>
-<div>{{ datadict['xl'] }}</div>
-<div>{{ datadict['yl'] }}</div>
+{% for key in datadict.keys() %}
+<div>{{ key }} -> {{ datadict[key] }}</div>
+{% endfor %}

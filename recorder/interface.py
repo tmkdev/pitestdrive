@@ -5,6 +5,8 @@ from multiprocessing import Process, Manager
 from views.hello import hello
 from views.stats import stats
 
+from motion_sensor import MotionSensor
+
 def create_app(record_event, shared_dict, debug=False):
     app = Flask(__name__)
     app.debug = debug
@@ -23,12 +25,21 @@ if __name__ == "__main__":
     manager = Manager()
 
     record_event = manager.Event()
+    running_event = manager.Event()
     shared_dict = manager.dict()
+    running_event.set()
 
-    shared_dict = { 'xl': 12.3, 'yl': 3.4 }
+    motion = MotionSensor(shared_data_dict=shared_dict, running_event=running_event)  # create a sensor process
+    motion.setup()
+    motion.start()
+
     app = create_app(record_event, shared_dict, debug=False)
-    
+
     try:
         app.run(host='0.0.0.0')
-    except KeyboardInterrupt:        
-        pass
+    except KeyboardInterrupt:
+        running_event.clear()
+        motion.join()
+
+
+
