@@ -12,8 +12,8 @@ import logging
 import gpsd
 
 class GpsPoller(multiprocessing.Process):
-    def __init__(self):
-        multiprocessing.Process.__init__(self, running_event, shared_data_dict)
+    def __init__(self, running_event, shared_data_dict):
+        multiprocessing.Process.__init__(self)
         self.current_packet = shared_data_dict
         self.sensor_present = True
         self.running = running_event

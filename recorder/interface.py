@@ -6,6 +6,7 @@ from views.hello import hello
 from views.stats import stats
 
 from motion_sensor import MotionSensor
+from gpssensor import GpsPoller
 
 def create_app(record_event, shared_dict, debug=False):
     app = Flask(__name__)
@@ -33,13 +34,19 @@ if __name__ == "__main__":
     motion.setup()
     motion.start()
 
+    gpsp = GpsPoller(shared_data_dict=shared_dict, running_event=running_event)
+    valid = gpsp.setup()
+    gpsp.start()  # start it up
+
     app = create_app(record_event, shared_dict, debug=False)
 
     try:
         app.run(host='0.0.0.0')
     except KeyboardInterrupt:
-        running_event.clear()
-        motion.join()
+        pass
 
+    running_event.clear()
+    motion.join()
+    gpsp.join()
 
 
