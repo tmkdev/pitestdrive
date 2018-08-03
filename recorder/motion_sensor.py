@@ -1,17 +1,17 @@
 import logging
 import sys
 import time
-import threading
+import multiprocessing
 
 from Adafruit_BNO055 import BNO055
 
 
-class MotionSensor(threading.Thread):
-    def __init__(self, serial_port='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH02JLPE-if00-port0'):
-        threading.Thread.__init__(self)
+class MotionSensor(multiprocessing.Process):
+    def __init__(self, serial_port='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH02JLPE-if00-port0', shared_data_dict, running_event):
+        multiprocessing.Process.__init__(self)
         self.serial_port = serial_port
-        self.current_reading = None
-        self.running = True
+        self.current_reading = shared_data_dict
+        self.running = running_event
         self.sensor_present = False
         self.bno = None
 
@@ -36,13 +36,13 @@ class MotionSensor(threading.Thread):
             logging.exception('Failed to initialize BNO055! Is the sensor connected?')
 
     def run(self):
-        while self.running:
+        while self.running.is_set():
             heading, roll, pitch = self.bno.read_euler()
             sys, gyro, accel, mag = self.bno.get_calibration_status()
             temp_c = self.bno.read_temp()
             xl, yl, zl = self.bno.read_linear_acceleration()
             xg, yg, zg = self.bno.read_gravity()
-            self.current_reading = {
+            self.shared_data_dict = { **self.shared_data_dict, **{
                 'heading': heading,
                 'roll': roll,
                 'pitch': pitch,
@@ -56,14 +56,23 @@ class MotionSensor(threading.Thread):
                 'xg': xg,
                 'yg': yg,
                 'zg': zg,
+                }
             }
 
             time.sleep(0.05)
 
 
 if __name__ == '__main__':
-    motion = MotionSensor()  # create the thread
+    manager = multiprocessing.Manager()
+    shared_dict = manager.dict()
+    running_event = multiprocessing.Event()
+    running_event.set()
+
+
+    motion = MotionSensor(shared_data_dict=shared_dict)  # create the thread
     valid = motion.setup()
+
+
 
     if valid:
         motion.start()
@@ -79,5 +88,5 @@ if __name__ == '__main__':
         logging.exception('Crap.')
         print('exit.')
 
-    motion.running = False
+    running_event.clear()
     motion.join()
