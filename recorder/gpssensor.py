@@ -3,24 +3,20 @@
 ## Written by Dan Mandle http://dan.mandle.me September 2012
 ## License: GPL 2.0
 
-
 import os
 from time import *
 import time
-import threading
+import multiprocessing
 import logging
 
 import gpsd
 
-lock = threading.Lock()
-
-
-class GpsPoller(threading.Thread):
+class GpsPoller(multiprocessing.Process):
     def __init__(self):
-        threading.Thread.__init__(self)
-        self.current_packet = None
-        self.running = True
+        multiprocessing.Process.__init__(self, running_event, shared_data_dict)
+        self.current_packet = shared_data_dict
         self.sensor_present = True
+        self.running = running_event
 
     def setup(self):
         gpsd.connect()
@@ -42,11 +38,10 @@ class GpsPoller(threading.Thread):
         return packet_dict
 
     def run(self):
-        while self.running:
+        while self.running.is_set():
             try:
                 current_packet = gpsd.get_current()
-                with lock:
-                    self.current_packet = self.pkt_to_dict(current_packet)
+                self.current_packet.update(self.pkt_to_dict(current_packet))
             except UserWarning:
                 logging.warning('Waiting on GPS')
 
@@ -54,22 +49,24 @@ class GpsPoller(threading.Thread):
 
 
 if __name__ == '__main__':
-    gpsp = GpsPoller()  # create the thread
+    manager = multiprocessing.Manager()
+    shared_dict = manager.dict()
+
+    running_event = multiprocessing.Event()
+    running_event.set()
+
+    gpsp = GpsPoller(shared_data_dict=shared_dict, running_event=running_event)
     valid = gpsp.setup()
 
     gpsp.start()  # start it up
+
     try:
         while True:
-            if gpsp.current_packet:
-                try:
-                    print(gpsp.current_packet)
-                except:
-                    logging.exception('Crap')
-
+            print(shared_dict)
             time.sleep(1)
     except:
         logging.exception('Crap.')
         print('exit.')
 
-    gpsp.running = False
+    running_event.clear()
     gpsp.join()
