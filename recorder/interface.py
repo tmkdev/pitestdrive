@@ -7,8 +7,9 @@ from views.stats import stats
 
 from motion_sensor import MotionSensor
 from gpssensor import GpsPoller
+from camera import Camera
 
-def create_app(record_event, shared_dict, debug=False):
+def create_app(record_event, shared_dict, camera_dict, debug=False):
     app = Flask(__name__)
     app.debug = debug
 
@@ -17,7 +18,8 @@ def create_app(record_event, shared_dict, debug=False):
 
     app.config.update(
         RECORD_EVENT=record_event,
-        SHARED_DICT=shared_dict
+        SHARED_DICT=shared_dict,
+        CAMERA_DICT=camera_dict,
     )
 
     return app
@@ -28,6 +30,7 @@ if __name__ == "__main__":
     record_event = manager.Event()
     running_event = manager.Event()
     shared_dict = manager.dict()
+    camera_dict = manager.dict()
     running_event.set()
 
     motion = MotionSensor(shared_data_dict=shared_dict, running_event=running_event)  # create a sensor process
@@ -38,7 +41,10 @@ if __name__ == "__main__":
     valid = gpsp.setup()
     gpsp.start()  # start it up
 
-    app = create_app(record_event, shared_dict, debug=False)
+    camera = Camera(running_event=running_event, recording_event=record_event, shared_data_dict=shared_dict, camera_dict=camera_dict, recordpath='/home/pi/tracklogs')
+    camera.start()
+
+    app = create_app(record_event, shared_dict, camera_dict, debug=False)
 
     try:
         app.run(host='0.0.0.0')
@@ -48,5 +54,5 @@ if __name__ == "__main__":
     running_event.clear()
     motion.join()
     gpsp.join()
-
+    camera.join()
 

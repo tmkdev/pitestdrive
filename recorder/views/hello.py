@@ -18,7 +18,7 @@ def record():
     return "Recording!!!"
 
 @hello.route('/stop')
-def record():
+def stop():
     current_app.config['RECORD_EVENT'].clear()
     return "Stopped Recording!!!"
 
