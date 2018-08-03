@@ -29,6 +29,6 @@ if __name__ == "__main__":
     app = create_app(record_event, shared_dict, debug=False)
     
     try:
-        app.run()
+        app.run(host='0.0.0.0')
     except KeyboardInterrupt:        
         pass
