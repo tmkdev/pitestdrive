@@ -1,4 +1,5 @@
-from flask import current_app, Blueprint, render_template, request
+import logging
+from flask import current_app, Blueprint, render_template, request, redirect, url_for
 
 main = Blueprint('main', __name__, url_prefix='/', template_folder='templates')
 
@@ -10,18 +11,19 @@ def shutdown_server():
 
 @main.route('/')
 def index():
-    return render_template('main.html', datadict = current_app.config['SHARED_DICT'])
+    return render_template('main.html', datadict = current_app.config['SHARED_DICT'], recording=current_app.config['RECORD_EVENT'])
 
 @main.route('/record')
 def record():
     current_app.config['RECORD_EVENT'].set()
-    return "Recording!!!"
+    logging.warning('recording started')
+    return redirect(url_for('main.index'))
 
 @main.route('/stop')
 def stop():
     current_app.config['RECORD_EVENT'].clear()
-    return "Stopped Recording!!!"
-
+    logging.warning('recording stopped')
+    return redirect(url_for('main.index'))
 
 @main.route('/shutdown')
 def shutdown():
