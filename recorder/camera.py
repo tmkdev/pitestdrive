@@ -32,7 +32,7 @@ class Camera(multiprocessing.Process):
                     slot=0
                     with picamera.PiCamera() as camera:
                         camera.resolution = (1920, 1080)
-                        camera.rotation = 270
+                        camera.rotation = 90
                         camera.framerate = 30
                         camera.start_recording(videofile)
                         while self.recording_event.is_set():
