@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">File</th>
+      <th scope="col">Size</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+{% for file in listing.keys()|sort %}
+    <tr>
+      <td>{{ file }}</td><td>{{ listing[file].st_size }}</td><td><a class="btn btn-primary" href="/files/download/{{ file }}" role="button">Download</a><a class="btn btn-warning" href="/files/delete/{{ file }}" role="button">Delete</a></td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+{% endblock %}
