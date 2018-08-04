@@ -65,8 +65,7 @@ if __name__ == '__main__':
             print(shared_dict)
             time.sleep(1)
     except:
-        logging.exception('Crap.')
-        print('exit.')
+        logging.exception('Something failed.')
 
     running_event.clear()
     gpsp.join()
