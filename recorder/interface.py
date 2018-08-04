@@ -9,7 +9,7 @@ from motion_sensor import MotionSensor
 from gpssensor import GpsPoller
 from camera import Camera
 
-def create_app(record_event, shared_dict, camera_dict debug=False):
+def create_app(record_event, shared_dict, camera_dict, debug=False):
     app = Flask(__name__)
     app.debug = debug
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     camera = Camera(running_event=running_event, recording_event=record_event, shared_data_dict=shared_dict, camera_dict=camera_dict, recordpath='/home/pi/tracklogs')
     camera.start()
 
-    app = create_app(record_event, shared_dict, debug=False)
+    app = create_app(record_event, shared_dict, camera_dict, debug=False)
 
     try:
         app.run(host='0.0.0.0')
