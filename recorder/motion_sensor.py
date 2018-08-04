@@ -79,12 +79,11 @@ if __name__ == '__main__':
 
     try:
         while True:
-            print(shared_dict)
+            logging.warning(shared_dict)
             time.sleep(1)
 
     except:
-        logging.exception('Crap.')
-        print('exit.')
+        logging.exception('Something Failed...')
 
     running_event.clear()
     motion.join()
