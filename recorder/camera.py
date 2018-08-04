@@ -24,6 +24,7 @@ class Camera(multiprocessing.Process):
                 videofile = '{0}/{1}.h264'.format(self.recordpath, basename)
                 self.camera_dict['jsonfile'] = jsonfile
                 self.camera_dict['videofile'] = videofile
+                self.camera_dict['starttime'] = datetime.datetime.now()
 
                 with open(jsonfile, 'w') as jsonfile:
                     self.camera_dict['status'] = 'recording'
@@ -47,7 +48,5 @@ class Camera(multiprocessing.Process):
                 logging.warning("Stopped Recording")
 
             else:
-                self.camera_dict['status'] = 'stopped'
-                self.camera_dict['jsonfile'] = None
-                self.camera_dict['videofile'] = None
+                self.camera_dict = { 'status': 'stopped' }
                 time.sleep(0.1)
