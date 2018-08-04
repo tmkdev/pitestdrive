@@ -4,4 +4,4 @@ stats = Blueprint('stats', __name__, url_prefix='/stats', template_folder='templ
 
 @stats.route('/')
 def index():
-    return render_template('stats.html', datadict = current_app.config['SHARED_DICT'])
+    return render_template('stats.html', datadict = current_app.config['SHARED_DICT'], active='stats')

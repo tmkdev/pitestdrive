@@ -1,11 +1,22 @@
 {% extends "base.html" %}
 
+{% block meta %}
+<meta http-equiv="refresh" content="4">
+{% endblock %}
+
 {% block content %}
+<div class="btn-group" role="group">
 {% if not recording.is_set() %}
 <a class="btn btn-success" href="/record" role="button">Start Recording</a>
 {% else %}
 <a class="btn btn-danger" href="/stop" role="button">Stop Recording</a>
 {% endif %} 
 <a class="btn btn-dark" href="/shutdown" role="button">Shutdown Server</a>
+</div>
+<div class="container-fluid">
+{% if recording.is_set() %}
+    {{ cameradict['videofile'] }}
+{% endif %}
+</div>
 {% endblock %}
 

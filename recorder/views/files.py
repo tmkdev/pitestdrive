@@ -14,7 +14,7 @@ def index():
 
     listing = dict(zip(flist, stats))
 
-    return render_template('files.html', listing=listing)
+    return render_template('files.html', listing=listing, active='files')
 
 @files.route('/download/<string:filename>')
 def download(filename):

@@ -1,14 +1,16 @@
 <!doctype html>
 <head>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block meta %}{% endblock %}
 </head>
 <body>
 <div class="container-fluid">
-<nav class="nav nav-fill">
-  <a class="nav-link active" href="/">Main</a>
-  <a class="nav-link" href="/stats">Live Sensors</a>
-  <a class="nav-link" href="/files">Files</a>
+<nav class="nav nav-fill nav-pills">
+  <a class="nav-link {% if active=='main' %}active{% endif %}" href="/">Main</a>
+  <a class="nav-link {% if active=='stats' %}active{% endif %}" href="/stats">Live Sensors</a>
+  <a class="nav-link {% if active=='files' %}active{%endif %}" href="/files">Files</a>
+  <h3>PiTestDrive Recorder</h3>
 </nav>
 </div>
 <div class="container-fluid">{% block content %}{% endblock %}

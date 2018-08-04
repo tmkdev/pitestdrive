@@ -11,7 +11,11 @@ def shutdown_server():
 
 @main.route('/')
 def index():
-    return render_template('main.html', datadict = current_app.config['SHARED_DICT'], recording=current_app.config['RECORD_EVENT'])
+    return render_template('main.html', 
+                            datadict = current_app.config['SHARED_DICT'],
+                            recording=current_app.config['RECORD_EVENT'],
+                            cameradict = current_app.config['CAMERA_DICT'],
+                            active='main')
 
 @main.route('/record')
 def record():
