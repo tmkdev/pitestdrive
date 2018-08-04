@@ -4,6 +4,7 @@ from multiprocessing import Process, Manager
 
 from views.main import main
 from views.stats import stats
+from views.files import files
 
 from motion_sensor import MotionSensor
 from gpssensor import GpsPoller
@@ -15,6 +16,7 @@ def create_app(record_event, shared_dict, camera_dict, debug=False):
 
     app.register_blueprint(main)
     app.register_blueprint(stats)
+    app.register_blueprint(files)
 
     app.config.update(
         RECORD_EVENT=record_event,

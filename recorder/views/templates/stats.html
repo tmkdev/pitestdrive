@@ -1,5 +1,12 @@
-<!doctype html>
-<title>Stats</title>
-{% for key in datadict.keys() %}
-<div>{{ key }} -> {{ datadict[key] }}</div>
+{% extends "base.html" %}
+
+{% block content %}
+<form>
+{% for key in datadict.keys()|sort %}
+  <div class="form-group">
+    <label for="{{ key }}"">{{ key }}</label>
+    <input type="text" readonly class="form-control" id="{{ key }}" value="{{ datadict[key] }}">
+  </div>
 {% endfor %}
+</form>
+{% endblock %}
