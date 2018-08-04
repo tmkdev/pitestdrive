@@ -3,7 +3,7 @@ import sys
 import time
 import multiprocessing
 
-import can4python
+import can4python as can
 
 class CanBus_Sensor(multiprocessing.Process):
     def __init__(self, shared_data_dict, running_event, kcd, canbus='can0', ):
